@@ -1,15 +1,25 @@
 <?php
-// Dynamic Data for Announcements
-$announcements = [
-    ["title" => "Strengthening Community Ties: UDM-URELIA", "author" => "Dr. Lella R. Gano", "venue" => "Barangay 750 Hall, Sta. Ana, Manila"],
-    ["title" => "Strengthening Community Engagement: URELIA and...", "author" => "Dr. Lella R. Gano", "venue" => "Accreditation Room", "date" => "February 7, 2025"]
-];
+// Load settings from JSON file
+$settingsFile = 'settings.json';
+$announcements = [];
+if (file_exists($settingsFile)) {
+    $settings = json_decode(file_get_contents($settingsFile), true);
+    $announcements = $settings['announcements'] ?? [];
+} else {
+    $settings = [];
+}
 
-// Dynamic Data for Events
-$events = [
-    ["title" => "UDM 30th Anniversary", "details" => "30 Years of Shaping Visionary Leaders: “Empowering Minds, Uplifting Society”"],
-    ["title" => "UDM Peer Facilitators: Simple Gift Giving Activity", "details" => "Organized on December 19, 2024, to spread joy among students."]
-];
+// Default values if settings file is missing
+$headerTitle = $settings["header_title"] ?? "Universidad de Manila";
+$logo = $settings["logo"] ?? 'Universidad_de_Manila_seal.png';
+$headerBgColor = $settings["header_bg_color"] ?? '#16533A';
+$sectionBgColor = $settings["section_bg_color"] ?? '#f9f9f9';
+$textColor = $settings["text_color"] ?? '#000000';
+$programsBg = $settings["programs_bg"] ?? 'UDM.jpg';
+$announcementsBg = $settings["announcements_bg"] ?? 'photo-1523050854058-8df90110c9f1.jpg';
+$eventsBg = $settings["events_bg"] ?? 'istockphoto-1486287149-612x612.jpg';
+
+
 ?>
 
 <!DOCTYPE html>
@@ -23,18 +33,17 @@ $events = [
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            line-height: 1.6;
-            color: #333;
-            background-color: green; /* Change the background color to green */
+            color: <?php echo htmlspecialchars($textColor); ?>; 
+            background-color: <?php echo htmlspecialchars($backgroundColor); ?>; /* Ensure background applies */
         }
-
         header {
-            background: rgb(22, 83, 58);
+            background: <?php echo htmlspecialchars($headerBgColor); ?>;
             color: #fff;
             padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+
         }
 
         .header-left {
@@ -71,6 +80,7 @@ $events = [
 
         section {
             padding: 2rem;
+            background: <?php echo htmlspecialchars($sectionBgColor); ?>;
             text-align: center;
         }
 
@@ -102,11 +112,10 @@ $events = [
         }
 
         footer {
-            background:rgb(22, 83, 58);
+            background: <?php echo htmlspecialchars($headerBgColor); ?>;
             color: #fff;
             text-align: center;
-            padding: 1rem 0;
-            margin-top: 2rem;
+            padding: 1rem;
         }
 
         /* Carousel Styles */
@@ -159,28 +168,51 @@ $events = [
         .carousel-control.next {
             right: 0;
         }
+
+       
+    .form-container {
+        max-width: 400px;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: <?php echo htmlspecialchars($sectionBgColor); ?>;
+        color: <?php echo htmlspecialchars($textColor); ?>;
+    }
+
+    .card {
+        background-color: <?php echo htmlspecialchars($sectionBgColor); ?>;
+        color: <?php echo htmlspecialchars($textColor); ?>;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    h1, h2, h3, h4, h5, h6, label, p {
+        color: <?php echo htmlspecialchars($textColor); ?> !important;
+    }
     </style>
 </head>
 <body>
 
 <header>
     <div class="header-left">
-        <!-- Add your logo here -->
-        <img src="Universidad_de_Manila_seal.png" alt="Universidad de Manila Logo">
-        <h1>Universidad de Manila</h1>
+        <img src="<?php echo htmlspecialchars($logo); ?>" alt="Universidad de Manila Logo">
+        <h1><?php echo htmlspecialchars($headerTitle); ?></h1> <!-- Editable Title -->
     </div>
     <nav>
-    <ul>
-        <li><a href="index.php">Home</a></li>
-        <li><a href="about.php">About</a></li>
-        <li><a href="contact.php">Contact</a></li>
-        <li><a href="privacy.php">Privacy Policy</a></li>
-        <li><a href="services.php">Services</a></li>
-    </ul>
-</nav>
+        <ul>
+            <li><a href="index.php">Home</a></li>
+            <li><a href="about.php">About</a></li>
+            <li><a href="contact.php">Contact</a></li>
+            <li><a href="privacy.php">Privacy Policy</a></li>
+            <li><a href="services.php">Services</a></li>
+            <li><a href="EDIT.php" target="_blank" style="color: yellow;">Edit</a></li>
+        </ul>
+    </nav>
 </header>
 
-<section id="programs" style="position: relative; background: url('UDM.jpg') no-repeat center center/cover; padding: 2rem; color: white; text-align: center;">
+<section id="programs" style="position: relative; background: url('<?php echo htmlspecialchars($programsBg); ?>') no-repeat center center/cover; padding: 2rem; color: white; text-align: center;">
     <div class="carousel">
         <div class="carousel-inner">
             <div class="carousel-item active">
@@ -199,26 +231,31 @@ $events = [
 </section>
 
 
-<<section id="announcements" style="position: relative; background: url('photo-1523050854058-8df90110c9f1.jpg') no-repeat center center/cover; padding: 2rem; color: white; text-align: center;">
-    <h2 style="font-size: 2rem; font-weight: bold;">ANNOUNCEMENTS</h2>
-    <div style="position: relative; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 1rem; margin-top: 1rem;">
-        <?php foreach ($announcements as $announcement): ?>
-            <div style="position: relative; width: 300px; background: rgba(0, 0, 0, 0.6); padding: 1rem; border-radius: 10px; overflow: hidden;">
-                <img src="umds1.jpg" alt="Announcement Image" style="width: 100%; height: auto; border-radius: 5px;">
-                <div style="padding: 0.5rem;">
-                    <h3 style="color: yellow; font-size: 1rem;"> <?php echo $announcement["title"]; ?> </h3>
-                    <p style="font-size: 0.9rem;">By: <?php echo $announcement["author"]; ?>
-                        <?php if (isset($announcement["date"])) echo " | Date: " . $announcement["date"]; ?>
-                        | Venue: <?php echo $announcement["venue"]; ?>
-                    </p>
-                    <a href="#" style="color: yellow; text-decoration: none; font-weight: bold;">Read More »</a>
-                </div>
-            </div>
-        <?php endforeach; ?>
-    </div>
+<section id="announcements" 
+    style="position: relative; background: url('<?php echo htmlspecialchars($announcementsBg); ?>') no-repeat center center/cover; padding: 2rem; text-align: center;">
+    
+    <h2>Latest Announcements</h2>
+
+    <?php if (!empty($announcements)) : ?>
+    <?php foreach ($announcements as $announcement) : ?>
+        <div class="announcement">
+            <h3><?php echo htmlspecialchars($announcement['title']); ?></h3>
+            <p><strong>Author:</strong> <?php echo htmlspecialchars($announcement['author']); ?></p>
+            <p><strong>Venue:</strong> <?php echo htmlspecialchars($announcement['venue']); ?></p>
+            <?php if (!empty($announcement['date'])) : ?>
+                <p><strong>Date:</strong> <?php echo htmlspecialchars($announcement['date']); ?></p>
+            <?php endif; ?>
+        </div>
+    <?php endforeach; ?>
+<?php else : ?>
+    <p>No announcements available.</p>
+<?php endif; ?>
+
 </section>
 
-<section id="events" style="background: #f5f1f0; padding: 2rem; text-align: center;">
+
+
+<section id="events" style="position: relative; background: url('<?php echo htmlspecialchars($eventsBg); ?>') no-repeat center center/cover; padding: 2rem; color: white; text-align: center;">
     <h2 style="font-size: 2rem; font-weight: bold;">UDM EVENTS</h2>
     <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
         <div style="max-width: 300px; background: white; padding: 1rem; border-radius: 10px; text-align: left;">
